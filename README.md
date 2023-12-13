@@ -2,6 +2,8 @@
 
 A library for provisioning a ESP32 with Bluetooth BLE
 
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ogabrielinacio)
+
 ## Getting Started
 
 ### Create an EspProv Instance
