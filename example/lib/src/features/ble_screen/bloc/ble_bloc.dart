@@ -173,6 +173,10 @@ class BleBloc extends Bloc<BleEvent, BleState> {
       String prefix = (event.prefix != null) ? event.prefix! : "";
       emit(BleScanning());
       disposeTimerAndStream = false;
+      scanningTimer = Timer(const Duration(seconds: 4), () {
+        add(BleScanCompletedEvent(devices: discoveredDevices, stopped: true));
+        add(BleStopScanEvent());
+      });
       streamSubscriptionScanBle =
           bleManager.startPeripheralScan().listen((scanResult) {
         Peripheral peripheral = scanResult.peripheral;
@@ -197,10 +201,6 @@ class BleBloc extends Bloc<BleEvent, BleState> {
           }
         }
         add(BleScanCompletedEvent(devices: discoveredDevices));
-        scanningTimer = Timer(const Duration(seconds: 3), () {
-          add(BleScanCompletedEvent(devices: discoveredDevices, stopped: true));
-          add(BleStopScanEvent());
-        });
       });
     });
 
@@ -235,6 +235,20 @@ class BleBloc extends Bloc<BleEvent, BleState> {
       discoveredDevices.clear();
       deviceConnected = false;
       add(BleScanningEvent(prefix: event.prefix));
+    });
+
+    on<BleDisposeScanEvent>((event, emit) async {
+      discoveredDevices.clear();
+      deviceConnected = false;
+      bleManager.stopPeripheralScan();
+      funcDisposeTimerAndStream();
+      logger.d(
+        "DISCOVERED DEVICES LIST: $discoveredDevices",
+      );
+
+      if (!deviceConnected && !disposeTimerAndStream) {
+        emit(BleStopScan());
+      }
     });
 
     on<BleConnectEvent>((event, emit) async {

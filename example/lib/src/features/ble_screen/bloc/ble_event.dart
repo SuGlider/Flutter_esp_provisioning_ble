@@ -45,6 +45,8 @@ class BleRestartingScanEvent extends BleEvent {
 
 class BleStopScanEvent extends BleEvent {}
 
+class BleDisposeScanEvent extends BleEvent {}
+
 class BleScanningErrorEvent extends BleEvent {}
 
 class BleScanCompletedEvent extends BleEvent {

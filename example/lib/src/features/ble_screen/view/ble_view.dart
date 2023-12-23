@@ -15,6 +15,7 @@ class BleView extends StatefulWidget {
 }
 
 class _BleViewState extends State<BleView> with WidgetsBindingObserver {
+  late BleBloc _bleBloc;
   @override
   void initState() {
     super.initState();
@@ -25,7 +26,7 @@ class _BleViewState extends State<BleView> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    BlocProvider.of<BleBloc>(context).add(BleStopScanEvent());
+    _bleBloc.add(BleDisposeScanEvent());
     super.dispose();
   }
 
@@ -35,6 +36,7 @@ class _BleViewState extends State<BleView> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     double sizeWidth = MediaQuery.of(context).size.width;
     double sizeHeight = MediaQuery.of(context).size.height;
+    _bleBloc = BlocProvider.of<BleBloc>(context);
     var customPadding = SizedBox(
       height: sizeHeight * 0.05,
     );
@@ -51,6 +53,7 @@ class _BleViewState extends State<BleView> with WidgetsBindingObserver {
       ),
       body: BlocBuilder<BleBloc, BleState>(
         builder: (context, state) {
+          print("Current state in Ble View is $state");
           if (state is BleDisabledState) {
             return Center(
               child: ElevatedButton(
